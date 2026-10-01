@@ -1,2 +1,106 @@
-.planning fieldset{border:1px solid #dbe2e9;border-radius:10px;margin:18px 0;padding:18px}.planning legend{font-weight:700;padding:0 8px}.planning small{display:block;color:#607185;margin-top:5px}.planning .spec-strip{display:flex;flex-wrap:wrap;gap:24px;background:#edf3f8;padding:18px;border-radius:8px;margin-top:20px}.planning .order-summary{display:flex;justify-content:space-between;gap:20px;align-items:center;border-top:1px solid #dbe2e9;margin-top:24px;padding-top:24px}.planning .order-summary span{display:block;font-size:22px;margin-top:6px}.planning textarea{display:block;width:100%;min-height:85px;border:1px solid #cbd5e1;border-radius:6px;padding:12px}.planning details{margin:20px 0}.planning summary{cursor:pointer;font-weight:600}.planning td input[type=checkbox]{width:18px;height:18px}.planning td button{margin-right:8px}.planning .line-card{padding:20px;background:#f5f8fb;border:1px solid #dbe2e9;border-radius:8px;margin:15px 0}.planning button:disabled{opacity:.55;cursor:not-allowed}@media(max-width:700px){.planning .order-summary{align-items:stretch;flex-direction:column}.planning .form-grid{grid-template-columns:1fr}}
-.planning button{border:1px solid #c9d5e2;border-radius:7px;background:white;color:#1b3b59;padding:9px 14px;font:inherit;cursor:pointer}.planning button.action{background:#155c9a;border-color:#155c9a;color:white;font-weight:600}.planning button.link-button{border:0;background:transparent;color:#087a9b;padding:3px}.planning input,.planning select,.planning textarea{font:inherit}
+.planning fieldset {
+  border: 1px solid #dbe2e9;
+  border-radius: 10px;
+  margin: 18px 0;
+  padding: 18px;
+}
+.planning legend {
+  font-weight: 700;
+  padding: 0 8px;
+}
+.planning small {
+  display: block;
+  color: #607185;
+  margin-top: 5px;
+}
+.planning .spec-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  background: #edf3f8;
+  padding: 18px;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+.planning .order-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  border-top: 1px solid #dbe2e9;
+  margin-top: 24px;
+  padding-top: 24px;
+}
+.planning .order-summary span {
+  display: block;
+  font-size: 22px;
+  margin-top: 6px;
+}
+.planning textarea {
+  display: block;
+  width: 100%;
+  min-height: 85px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 12px;
+}
+.planning details {
+  margin: 20px 0;
+}
+.planning summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.planning td input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+}
+.planning td button {
+  margin-right: 8px;
+}
+.planning .line-card {
+  padding: 20px;
+  background: #f5f8fb;
+  border: 1px solid #dbe2e9;
+  border-radius: 8px;
+  margin: 15px 0;
+}
+.planning button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+@media (max-width: 700px) {
+  .planning .order-summary {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .planning .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.planning button {
+  border: 1px solid #c9d5e2;
+  border-radius: 7px;
+  background: white;
+  color: #1b3b59;
+  padding: 9px 14px;
+  font: inherit;
+  cursor: pointer;
+}
+.planning button.action {
+  background: #155c9a;
+  border-color: #155c9a;
+  color: white;
+  font-weight: 600;
+}
+.planning button.link-button {
+  border: 0;
+  background: transparent;
+  color: #087a9b;
+  padding: 3px;
+}
+.planning input,
+.planning select,
+.planning textarea {
+  font: inherit;
+}

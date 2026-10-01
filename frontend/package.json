@@ -1,2 +1,32 @@
-{"name":"produccion-paperless-frontend","private":true,"version":"1.0.0","type":"module","scripts":{"dev":"vite --configLoader runner","build":"tsc -b && vite build --configLoader runner","preview":"vite preview --configLoader runner"},"dependencies":{"@tanstack/react-query":"^5.85.5","axios":"^1.11.0","lucide-react":"^0.542.0","react":"^19.1.1","react-dom":"^19.1.1","react-hook-form":"^7.62.0","react-router-dom":"^7.8.2","zod":"^4.1.5","@hookform/resolvers":"^5.2.1"},"devDependencies":{"@types/react":"^19.1.12","@types/react-dom":"^19.1.9","@vitejs/plugin-react":"^5.0.2","typescript":"~5.9.2","vite":"^7.1.4"}}
-
+{
+  "name": "produccion-paperless-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --configLoader runner",
+    "build": "tsc -b && vite build --configLoader runner",
+    "preview": "vite preview --configLoader runner",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css}\" vite.config.ts index.html",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" vite.config.ts index.html"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.1",
+    "@tanstack/react-query": "^5.85.5",
+    "axios": "^1.11.0",
+    "lucide-react": "^0.542.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-hook-form": "^7.62.0",
+    "react-router-dom": "^7.8.2",
+    "zod": "^4.1.5"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.2",
+    "prettier": "3.6.2",
+    "typescript": "~5.9.2",
+    "vite": "^7.1.4"
+  }
+}

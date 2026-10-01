@@ -1,3 +1,110 @@
-.production-shell main{min-width:0}.production-shell aside{overflow-y:auto}.production-shell nav a span{font-size:14px}.production-shell .profile strong,.production-shell .profile small{overflow-wrap:anywhere}.production-home{padding:28px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,420px));gap:20px}.production-module{display:block;background:white;border:1px solid #d7deea;border-radius:14px;padding:26px;box-shadow:0 2px 8px #15223b0d;text-decoration:none;color:#102a43}.production-module svg{color:#168aad}.production-module p{color:#627d98;line-height:1.6}.production-module span{color:#214f8a;font-weight:700}.production-module:hover{border-color:#214f8a}.production-module:focus-visible,.production-shell nav a:focus-visible,.production-shell .profile button:focus-visible{outline:3px solid #f9b233;outline-offset:3px}
-@media(max-width:850px){.production-shell{grid-template-columns:200px minmax(0,1fr)}.production-shell aside{padding:18px 10px}.production-shell .brand small{display:block;font-size:11px}.production-shell nav a{justify-content:flex-start}.production-shell .profile{grid-template-columns:32px 1fr 28px;gap:5px}.production-shell .profile>div:not(.avatar),.production-shell .profile button{display:block}.production-shell .avatar{width:32px;height:32px}.production-shell .content{padding:0 12px 20px}.production-shell .form-grid{grid-template-columns:minmax(0,1fr)}}
-@media(max-width:580px){.production-shell{display:block}.production-shell aside{position:static;height:auto;gap:12px}.production-shell .brand{margin:0}.production-shell nav{display:flex;flex-wrap:wrap}.production-shell .profile{margin-top:0;padding-top:12px;grid-template-columns:32px 1fr 32px}.production-shell main>header{padding:0 16px}.production-home{grid-template-columns:minmax(0,1fr)}}
+.production-shell main {
+  min-width: 0;
+}
+.production-shell aside {
+  overflow-y: auto;
+}
+.production-shell nav a span {
+  font-size: 14px;
+}
+.production-shell .profile strong,
+.production-shell .profile small {
+  overflow-wrap: anywhere;
+}
+.production-home {
+  padding: 28px 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 420px));
+  gap: 20px;
+}
+.production-module {
+  display: block;
+  background: white;
+  border: 1px solid #d7deea;
+  border-radius: 14px;
+  padding: 26px;
+  box-shadow: 0 2px 8px #15223b0d;
+  text-decoration: none;
+  color: #102a43;
+}
+.production-module svg {
+  color: #168aad;
+}
+.production-module p {
+  color: #627d98;
+  line-height: 1.6;
+}
+.production-module span {
+  color: #214f8a;
+  font-weight: 700;
+}
+.production-module:hover {
+  border-color: #214f8a;
+}
+.production-module:focus-visible,
+.production-shell nav a:focus-visible,
+.production-shell .profile button:focus-visible {
+  outline: 3px solid #f9b233;
+  outline-offset: 3px;
+}
+@media (max-width: 850px) {
+  .production-shell {
+    grid-template-columns: 200px minmax(0, 1fr);
+  }
+  .production-shell aside {
+    padding: 18px 10px;
+  }
+  .production-shell .brand small {
+    display: block;
+    font-size: 11px;
+  }
+  .production-shell nav a {
+    justify-content: flex-start;
+  }
+  .production-shell .profile {
+    grid-template-columns: 32px 1fr 28px;
+    gap: 5px;
+  }
+  .production-shell .profile > div:not(.avatar),
+  .production-shell .profile button {
+    display: block;
+  }
+  .production-shell .avatar {
+    width: 32px;
+    height: 32px;
+  }
+  .production-shell .content {
+    padding: 0 12px 20px;
+  }
+  .production-shell .form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 580px) {
+  .production-shell {
+    display: block;
+  }
+  .production-shell aside {
+    position: static;
+    height: auto;
+    gap: 12px;
+  }
+  .production-shell .brand {
+    margin: 0;
+  }
+  .production-shell nav {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .production-shell .profile {
+    margin-top: 0;
+    padding-top: 12px;
+    grid-template-columns: 32px 1fr 32px;
+  }
+  .production-shell main > header {
+    padding: 0 16px;
+  }
+  .production-home {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
