@@ -61,10 +61,10 @@ export function labelZpl(d: LabelData, c: LabelConfig, logo: string) {
     `^FO${x(0.06)},${y(py)}^GB${x(0.9)},${Math.max(2, Math.round(dots / 4))},${Math.max(2, Math.round(dots / 4))}^FS\n`;
   // Condición en negativo (blanco sobre negro) para distinguir OK de despunte, anillo QA, etc.
   const condition = conditionName(d.condicion).toUpperCase();
-  const condFont = Math.min(y(0.1), Math.floor(x(0.58) / (condition.length * CHAR)));
+  const condFont = Math.min(y(0.09), Math.floor(x(0.58) / (condition.length * CHAR)));
   const conditionBox =
-    `^FO${x(0.35)},${y(0.235)}^GB${x(0.61)},${y(0.13)},${y(0.13)}^FS\n` +
-    `^FO${x(0.37)},${y(0.235) + Math.round((y(0.13) - condFont) / 2) + 2}^A0N,${condFont},${condFont}^FR^FH_^FD${field(condition)}^FS\n`;
+    `^FO${x(0.35)},${y(0.21)}^GB${x(0.61)},${y(0.11)},${y(0.11)}^FS\n` +
+    `^FO${x(0.37)},${y(0.21) + Math.round((y(0.11) - condFont) / 2) + 2}^A0N,${condFont},${condFont}^FR^FH_^FD${field(condition)}^FS\n`;
   // Code 39: narrow:wide 1:2, 12 modules per symbol, 1-module inter-character gap, 10-module quiet zones.
   const symbols = d.serial.length + 2,
     module = Math.floor(x(0.9) / (symbols * 13 - 1 + 20));
@@ -78,18 +78,18 @@ export function labelZpl(d: LabelData, c: LabelConfig, logo: string) {
   const length = Number(d.longitud_real);
   const meters = Number.isFinite(length) ? length.toFixed(3) : d.longitud_real;
   return (
-    `^XA^CI28^PW${w}^LL${h}^LH0,0\n^FO${x(0.06)},${y(0.05)}${logo}^FS\n` +
-    text(0.35, 0.05, d.serial, 0.16, 0.61) +
+    `^XA^CI28^PW${w}^LL${h}^LH0,0\n^FO${x(0.06)},${y(0.04)}${logo}^FS\n` +
+    text(0.35, 0.04, d.serial, 0.15, 0.61) +
     conditionBox +
-    line(0.395) +
-    `^FO${Math.round((w - barcodeWidth) / 2)},${y(0.425)}^BY${module},2,${y(0.2)}^B3N,N,${y(0.2)},N,N^FD${d.serial}^FS\n` +
-    line(0.645) +
-    text(0.06, 0.675, `DN ${d.dn}`, 0.095, 0.29) +
-    text(0.37, 0.675, `PN ${d.pn}`, 0.095, 0.28) +
-    text(0.68, 0.675, `SN ${d.sn ?? 'N/A'}`, 0.095, 0.28) +
-    text(0.06, 0.795, `${meters} m`, 0.105, 0.42) +
-    text(0.52, 0.81, `Turno ${d.turno}`, 0.08, 0.44) +
-    text(0.06, 0.905, `${date}  ${d.operador}`, 0.065, 0.9) +
+    line(0.345) +
+    `^FO${Math.round((w - barcodeWidth) / 2)},${y(0.37)}^BY${module},2,${y(0.18)}^B3N,N,${y(0.18)},N,N^FD${d.serial}^FS\n` +
+    line(0.575) +
+    text(0.06, 0.6, `DN ${d.dn}`, 0.085, 0.29) +
+    text(0.37, 0.6, `PN ${d.pn}`, 0.085, 0.28) +
+    text(0.68, 0.6, `SN ${d.sn ?? 'N/A'}`, 0.085, 0.28) +
+    text(0.06, 0.705, `${meters} m`, 0.095, 0.42) +
+    text(0.52, 0.715, `Turno ${d.turno}`, 0.075, 0.44) +
+    text(0.06, 0.815, `${date}  ${d.operador}`, 0.06, 0.9) +
     '^PQ1,0,1,N^XZ'
   );
 }
