@@ -1,8 +1,16 @@
 import { useAuth } from '../auth/AuthContext';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { api } from '../api/client';
 import { discoverPrinters, sendLabel, type PrinterDevice } from './browserPrint';
 import { labelZpl, logoGraphic, validateConfig, type LabelConfig, type LabelData } from './label';
+import './zebra-dialog.css';
+type PrintDialog = {
+  phase: 'printing' | 'confirm' | 'error';
+  id: string;
+  serial?: string;
+  printer?: string;
+  message?: string;
+};
 const key = 'winder-zebra-config-v1';
 const profile = 'ZT411-104x54-203';
 function readConfig() {
@@ -25,7 +33,12 @@ export function useZebra(userId: string) {
     [automatic, setAutomatic] = useState(initial.automatic !== false),
     [devices, setDevices] = useState<PrinterDevice[]>([]),
     [status, setStatus] = useState(''),
-    [working, setWorking] = useState(false);
+    [working, setWorking] = useState(false),
+    [dialog, setDialog] = useState<PrintDialog | null>(null);
+  const confirmRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (dialog?.phase !== 'printing') confirmRef.current?.focus();
+  }, [dialog?.phase]);
   const lock = useRef(false);
   const pendingKey = `winder-labels-${userId}`;
   const [pending, setPending] = useState<string[]>(() => {
@@ -78,6 +91,7 @@ export function useZebra(userId: string) {
     }
     lock.current = true;
     setWorking(true);
+    setDialog({ phase: 'printing', id });
     try {
       validateConfig(config);
       if (!uid)
@@ -91,16 +105,29 @@ export function useZebra(userId: string) {
           'La impresora seleccionada no está disponible. Solicita al administrador verificar la configuración Zebra.',
         );
       const { data } = await api.get<LabelData>(`/produccion/tuberia/registros/${id}/etiqueta`);
+      setDialog({ phase: 'printing', id, serial: data.serial, printer: device.name });
       const zpl = labelZpl(data, config, await logoGraphic(config));
       await sendLabel(device, zpl);
-      updatePending(id, true);
-      setStatus(`Etiqueta ${data.serial} enviada a ${device.name}. Comprueba la salida física.`);
+      // Queda pendiente hasta que el operador confirme la salida física.
+      setStatus(`Etiqueta ${data.serial} enviada a ${device.name}. Confirma la salida física.`);
+      setDialog({ phase: 'confirm', id, serial: data.serial, printer: device.name });
     } catch (e) {
       setStatus(`Tubo guardado. Etiqueta pendiente: ${(e as Error).message}`);
+      setDialog({ phase: 'error', id, message: (e as Error).message });
     } finally {
       lock.current = false;
       setWorking(false);
     }
+  };
+  const confirmPrinted = () => {
+    if (!dialog) return;
+    updatePending(dialog.id, true);
+    setStatus(`Etiqueta ${dialog.serial ?? ''} confirmada.`);
+    setDialog(null);
+  };
+  const leavePending = () => {
+    setStatus('La etiqueta quedó en pendientes por verificar. Puedes reimprimirla desde ahí.');
+    setDialog(null);
   };
   const afterRegister = async (id: string, duplicate: boolean) => {
     if (duplicate) {
@@ -224,5 +251,74 @@ export function useZebra(userId: string) {
         )}
       </section>
     ) : null;
-  return { configuration, panel, afterRegister, print, working };
+  const dialogView = dialog ? (
+    <div className="zebra-overlay">
+      <div
+        className={`zebra-dialog zebra-${dialog.phase}`}
+        role={dialog.phase === 'printing' ? 'status' : 'alertdialog'}
+        aria-modal="true"
+        aria-labelledby="zebra-dialog-title"
+      >
+        {dialog.phase === 'printing' && (
+          <>
+            <div className="zebra-spinner" aria-hidden="true" />
+            <h3 id="zebra-dialog-title">Imprimiendo etiqueta…</h3>
+            <p>
+              {dialog.serial
+                ? `Enviando ${dialog.serial} a ${dialog.printer}.`
+                : 'Preparando la etiqueta y buscando la impresora.'}
+            </p>
+            <p className="zebra-hint">No cierres esta ventana.</p>
+          </>
+        )}
+        {dialog.phase === 'confirm' && (
+          <>
+            <h3 id="zebra-dialog-title">¿Salió bien la etiqueta?</h3>
+            <p className="zebra-serial">{dialog.serial}</p>
+            <p>
+              Revisa en la impresora que la etiqueta salió completa, legible y con el serial
+              correcto.
+            </p>
+            <div className="zebra-actions">
+              <button type="button" onClick={leavePending}>
+                Revisar después
+              </button>
+              <button type="button" onClick={() => void print(dialog.id)}>
+                No salió · Reimprimir
+              </button>
+              <button
+                type="button"
+                className="zebra-primary"
+                ref={confirmRef}
+                onClick={confirmPrinted}
+              >
+                Sí, salió bien
+              </button>
+            </div>
+          </>
+        )}
+        {dialog.phase === 'error' && (
+          <>
+            <h3 id="zebra-dialog-title">No se pudo imprimir</h3>
+            <p className="zebra-error">{dialog.message}</p>
+            <p>El tubo ya está guardado; la etiqueta queda pendiente.</p>
+            <div className="zebra-actions">
+              <button type="button" onClick={leavePending}>
+                Cerrar
+              </button>
+              <button
+                type="button"
+                className="zebra-primary"
+                ref={confirmRef}
+                onClick={() => void print(dialog.id)}
+              >
+                Reintentar
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  ) : null;
+  return { configuration, panel, dialog: dialogView, afterRegister, print, working };
 }

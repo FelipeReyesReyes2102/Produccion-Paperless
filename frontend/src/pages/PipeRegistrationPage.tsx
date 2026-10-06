@@ -293,6 +293,7 @@ export function PipeRegistrationPage() {
         </section>
         <div className="pipe-main">
           {can('PRODUCCION.TUBERIA.REGISTRAR') && zebra.panel}
+          {zebra.dialog}
           {lot && (
             <section className="pipe-progress form-card">
               <div>
