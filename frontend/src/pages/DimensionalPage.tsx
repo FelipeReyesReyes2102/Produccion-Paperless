@@ -4,6 +4,7 @@ import { api } from '../api/client';
 import { errorText } from '../api/errors';
 import { useAuth } from '../auth/AuthContext';
 import { average, check, num, type Range } from './dimensionalRules';
+import { parseLabelCode, type LabelCode } from '../printing/labelCode';
 import './planning.css';
 import './pipe-workstation.css';
 import './dimensional.css';
@@ -89,6 +90,7 @@ export function DimensionalPage() {
   const [shift, setShift] = useState('');
   const [serialInput, setSerialInput] = useState('');
   const [serial, setSerial] = useState('');
+  const [scanned, setScanned] = useState<LabelCode | null>(null);
   const [form, setForm] = useState<Form>(emptyForm);
   const [manualA, setManualA] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -177,9 +179,41 @@ export function DimensionalPage() {
     setMessage([]);
     setError('');
     setEditing(false);
-    setSerial(serialInput.trim());
-    void qc.invalidateQueries({ queryKey: ['dimensional-tube', serialInput.trim()] });
+    // Acepta el QR de la etiqueta (OTEK1) o el serial escrito a mano.
+    const code = parseLabelCode(serialInput);
+    const next = code?.serial ?? serialInput.trim();
+    setScanned(code);
+    setSerialInput(next);
+    setSerial(next);
+    void qc.invalidateQueries({ queryKey: ['dimensional-tube', next] });
   }
+
+  // Compara lo impreso en el QR con el registro actual para detectar etiquetas desactualizadas.
+  const labelDiffs = useMemo(() => {
+    if (!t || !scanned || scanned.serial !== t.tubo.serial) return [];
+    const same = (a: unknown, b: unknown) =>
+      String(a ?? '')
+        .toUpperCase()
+        .replace(/_/g, '-') ===
+      String(b ?? '')
+        .toUpperCase()
+        .replace(/_/g, '-');
+    const diffs: string[] = [];
+    const add = (label: string, printed: unknown, current: unknown) => {
+      if (printed !== undefined && !same(printed, current))
+        diffs.push(`${label}: etiqueta ${printed ?? 'N/A'} · registro ${current ?? 'N/A'}`);
+    };
+    add('Lote', scanned.lote, t.lote.folio);
+    add('Condición', scanned.condicion, t.tubo.condicion);
+    add('DN', scanned.dn, t.lote.dn);
+    add('PN', scanned.pn, t.lote.pn);
+    add('SN', scanned.sn, t.lote.sn);
+    if (scanned.longitud !== undefined && num(scanned.longitud) !== num(t.tubo.longitud_real))
+      diffs.push(
+        `Longitud: etiqueta ${scanned.longitud} m · registro ${fixed(t.tubo.longitud_real)} m`,
+      );
+    return diffs;
+  }, [t, scanned]);
 
   function reset(next: string[]) {
     setMessage(next);
@@ -321,8 +355,8 @@ export function DimensionalPage() {
               ref={serialRef}
               autoFocus
               required
-              maxLength={40}
-              placeholder="Escanea o escribe el serial y presiona Enter"
+              maxLength={300}
+              placeholder="Escanea el QR de la etiqueta o escribe el serial y presiona Enter"
               value={serialInput}
               disabled={!ready}
               onChange={(e) => setSerialInput(e.target.value)}
@@ -341,6 +375,22 @@ export function DimensionalPage() {
         </div>
       )}
       {info.isError && <p className="error">{errorText(info.error)}</p>}
+      {labelDiffs.length > 0 && (
+        <div className="form-card process-warning" role="alert">
+          <strong>La etiqueta escaneada no coincide con el registro actual.</strong>
+          <ul>
+            {labelDiffs.map((d) => (
+              <li key={d}>{d}</li>
+            ))}
+          </ul>
+          <p>Se usan los datos del registro. Reimprime la etiqueta desde Winder.</p>
+        </div>
+      )}
+      {t && scanned && labelDiffs.length === 0 && (
+        <p className="success" role="status">
+          QR leído: los datos de la etiqueta coinciden con el registro.
+        </p>
+      )}
 
       {t && (
         <div className="pipe-workspace">
@@ -650,6 +700,7 @@ export function DimensionalPage() {
                             type="button"
                             className="link-button"
                             onClick={() => {
+                              setScanned(null);
                               setSerialInput(m.serial || '');
                               setSerial(m.serial || '');
                               setEditing(false);
