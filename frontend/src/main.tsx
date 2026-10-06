@@ -4,12 +4,13 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route, NavLink, Outlet, Link, Navigate } from 'react-router-dom';
-import { Home, Factory, LogOut, Printer, Ruler } from 'lucide-react';
+import { Home, Factory, LogOut, Printer, Ruler, Wrench } from 'lucide-react';
 import { AuthProvider, useAuth } from './auth/AuthContext';
 import { ProtectedRoute } from './auth/ProtectedRoute';
 import { LoginPage } from './pages/LoginPage';
 import { PipeRegistrationPage } from './pages/PipeRegistrationPage';
 import { DimensionalPage } from './pages/DimensionalPage';
+import { CalibradoPage } from './pages/CalibradoPage';
 import './styles.css';
 import './production-layout.css';
 import './brand-theme.css';
@@ -40,6 +41,12 @@ function Production() {
             <NavLink to="/dimensional">
               <Ruler size={19} />
               <span>Dimensional</span>
+            </NavLink>
+          )}
+          {allowed && can('PRODUCCION.CALIBRADO.REGISTRAR') && (
+            <NavLink to="/calibrado">
+              <Wrench size={19} />
+              <span>Calibrado y chaflanado</span>
             </NavLink>
           )}
           {user?.roles.includes('ADMINISTRADOR') && (
@@ -111,6 +118,17 @@ function HomePage() {
             <span>Abrir medición →</span>
           </Link>
         )}
+        {can('PRODUCCION.CALIBRADO.REGISTRAR') && (
+          <Link className="production-module" to="/calibrado">
+            <Wrench size={30} />
+            <h3>Calibrado y chaflanado</h3>
+            <p>
+              Registra el chaflán (BL) de cada extremo y los diámetros de los tubos que se
+              rectifican.
+            </p>
+            <span>Abrir registro →</span>
+          </Link>
+        )}
       </section>
     </>
   );
@@ -129,6 +147,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 <Route path="configuracion-zebra" element={<ZebraSettingsPage />} />
                 <Route path="tuberia" element={<PipeRegistrationPage />} />
                 <Route path="dimensional" element={<DimensionalPage />} />
+                <Route path="calibrado" element={<CalibradoPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Route>
             </Route>
