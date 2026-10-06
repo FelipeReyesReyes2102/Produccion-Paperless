@@ -19,3 +19,6 @@
 *.sqlite*
 ACCESO_LOCAL.txt
 local-secrets.json
+
+# Biblioteca oficial de Zebra Browser Print (se instala con CONFIGURAR_ZEBRA.ps1; no se versiona)
+frontend/public/vendor/
