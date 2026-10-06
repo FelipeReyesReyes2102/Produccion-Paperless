@@ -1,0 +1,142 @@
+.dimensional-scan {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: end;
+  margin-top: 12px;
+}
+.dimensional-scan label {
+  display: grid;
+  gap: 6px;
+  flex: 1 1 320px;
+  font-weight: 600;
+}
+.dimensional-scan input {
+  font-size: 18px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line, #dbe4ec);
+  font-variant-numeric: tabular-nums;
+}
+.dimensional-scan button,
+.dimensional-actions button {
+  padding: 12px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--brand, #246294);
+  background: #fff;
+  color: var(--brand, #246294);
+  font-weight: 600;
+  cursor: pointer;
+}
+.dimensional-actions .action,
+.dimensional-scan button:not(:disabled) {
+  background: var(--brand, #246294);
+  color: #fff;
+}
+.dimensional-scan button:disabled,
+.dimensional-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.dimensional-scan small {
+  flex-basis: 100%;
+  color: var(--muted, #607184);
+}
+.dimensional .process-valid input {
+  background: #e1f5e5 !important;
+  border-color: #68a878 !important;
+  color: #174f29;
+}
+.dimensional .process-invalid input {
+  background: #fde1e1 !important;
+  border-color: #cc4545 !important;
+  color: #862323;
+}
+.dimensional-form .form-grid input,
+.dimensional-form .form-grid select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.dimensional .process-field input[readonly] {
+  font-style: italic;
+}
+.dimensional-four {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+.dimensional-fit {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+}
+.dimensional-fit.ok {
+  background: #e1f5e5;
+  color: #174f29;
+}
+.dimensional-fit.no {
+  background: #fde1e1;
+  color: #862323;
+}
+.dimensional-check {
+  display: flex !important;
+  gap: 8px;
+  align-items: center;
+  margin: 12px 0;
+}
+.dimensional-visual {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+.dimensional-form textarea {
+  width: 100%;
+  min-height: 60px;
+  box-sizing: border-box;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--line, #dbe4ec);
+  font: inherit;
+}
+.dimensional-form > fieldset > label {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+}
+.dimensional-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+.dimensional-summary {
+  width: 100%;
+  margin-top: 16px;
+  border-collapse: collapse;
+  font-size: 13px;
+  color: #fff;
+}
+.dimensional-summary th,
+.dimensional-summary td {
+  padding: 6px 4px;
+  border-bottom: 1px solid #3c4c60;
+  text-align: right;
+}
+.dimensional-summary th:first-child,
+.dimensional-summary td:first-child {
+  text-align: left;
+}
+.link-button {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--brand, #246294);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+@media (max-width: 900px) {
+  .dimensional-four {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}

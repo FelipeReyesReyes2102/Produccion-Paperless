@@ -4,16 +4,17 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route, NavLink, Outlet, Link, Navigate } from 'react-router-dom';
-import { Home, Factory, LogOut, Printer } from 'lucide-react';
+import { Home, Factory, LogOut, Printer, Ruler } from 'lucide-react';
 import { AuthProvider, useAuth } from './auth/AuthContext';
 import { ProtectedRoute } from './auth/ProtectedRoute';
 import { LoginPage } from './pages/LoginPage';
 import { PipeRegistrationPage } from './pages/PipeRegistrationPage';
+import { DimensionalPage } from './pages/DimensionalPage';
 import './styles.css';
 import './production-layout.css';
 import './brand-theme.css';
 function Production() {
-  const { user, logout } = useAuth();
+  const { user, logout, can } = useAuth();
   const allowed = user?.roles.some((role) =>
     ['OPERARIO', 'ADMINISTRADOR', 'SUPERVISOR', 'SUPERVISOR_MANUFACTURA'].includes(role),
   );
@@ -33,6 +34,12 @@ function Production() {
             <NavLink to="/tuberia">
               <Factory size={19} />
               <span>Winder</span>
+            </NavLink>
+          )}
+          {allowed && can('PRODUCCION.DIMENSIONAL.REGISTRAR') && (
+            <NavLink to="/dimensional">
+              <Ruler size={19} />
+              <span>Dimensional</span>
             </NavLink>
           )}
           {user?.roles.includes('ADMINISTRADOR') && (
@@ -76,7 +83,7 @@ function Production() {
   );
 }
 function HomePage() {
-  const { user } = useAuth();
+  const { user, can } = useAuth();
   return (
     <>
       <section className="module-hero">
@@ -93,6 +100,17 @@ function HomePage() {
           </p>
           <span>Abrir registro →</span>
         </Link>
+        {can('PRODUCCION.DIMENSIONAL.REGISTRAR') && (
+          <Link className="production-module" to="/dimensional">
+            <Ruler size={30} />
+            <h3>Dimensional</h3>
+            <p>
+              Escanea el serial de un tubo de Winder y registra diámetros, espesores e inspección
+              visual.
+            </p>
+            <span>Abrir medición →</span>
+          </Link>
+        )}
       </section>
     </>
   );
@@ -110,6 +128,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 <Route index element={<HomePage />} />
                 <Route path="configuracion-zebra" element={<ZebraSettingsPage />} />
                 <Route path="tuberia" element={<PipeRegistrationPage />} />
+                <Route path="dimensional" element={<DimensionalPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Route>
             </Route>
