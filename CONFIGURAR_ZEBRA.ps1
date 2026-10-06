@@ -5,6 +5,7 @@ if ($source.Extension -ne '.js') { throw 'Selecciona BrowserPrint-3.x.xxx.min.js
 $content=Get-Content -LiteralPath $source.FullName -Raw
 if ($content -notmatch 'BrowserPrint' -or $content -notmatch 'getLocalDevices') { throw 'El archivo no parece ser la biblioteca base Browser Print.' }
 $destination=Join-Path $PSScriptRoot 'frontend\public\vendor\BrowserPrint.min.js'
+New-Item -ItemType Directory -Force -Path (Split-Path $destination) | Out-Null
 Copy-Item -LiteralPath $source.FullName -Destination $destination -Force
 Write-Host 'Biblioteca incorporada. Instala y abre Zebra Browser Print en cada equipo de captura.'
 Write-Host 'En Winder: Buscar impresoras, elegir Zebra, configurar medidas y guardar.'
