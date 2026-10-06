@@ -4,13 +4,14 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route, NavLink, Outlet, Link, Navigate } from 'react-router-dom';
-import { Home, Factory, LogOut, Printer, Ruler, Wrench } from 'lucide-react';
+import { Home, Factory, Gauge, LogOut, Printer, Ruler, Wrench } from 'lucide-react';
 import { AuthProvider, useAuth } from './auth/AuthContext';
 import { ProtectedRoute } from './auth/ProtectedRoute';
 import { LoginPage } from './pages/LoginPage';
 import { PipeRegistrationPage } from './pages/PipeRegistrationPage';
 import { DimensionalPage } from './pages/DimensionalPage';
 import { CalibradoPage } from './pages/CalibradoPage';
+import { HydroPage } from './pages/HydroPage';
 import './styles.css';
 import './production-layout.css';
 import './brand-theme.css';
@@ -47,6 +48,12 @@ function Production() {
             <NavLink to="/calibrado">
               <Wrench size={19} />
               <span>Calibrado y chaflanado</span>
+            </NavLink>
+          )}
+          {allowed && can('PRODUCCION.PRUEBA_HIDRAULICA.REGISTRAR') && (
+            <NavLink to="/prueba-hidraulica">
+              <Gauge size={19} />
+              <span>Prueba hidráulica</span>
             </NavLink>
           )}
           {user?.roles.includes('ADMINISTRADOR') && (
@@ -129,6 +136,14 @@ function HomePage() {
             <span>Abrir registro →</span>
           </Link>
         )}
+        {can('PRODUCCION.PRUEBA_HIDRAULICA.REGISTRAR') && (
+          <Link className="production-module" to="/prueba-hidraulica">
+            <Gauge size={30} />
+            <h3>Prueba hidráulica</h3>
+            <p>Registra la presión de prueba y el resultado de cada tubo.</p>
+            <span>Abrir prueba →</span>
+          </Link>
+        )}
       </section>
     </>
   );
@@ -148,6 +163,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 <Route path="tuberia" element={<PipeRegistrationPage />} />
                 <Route path="dimensional" element={<DimensionalPage />} />
                 <Route path="calibrado" element={<CalibradoPage />} />
+                <Route path="prueba-hidraulica" element={<HydroPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Route>
             </Route>
