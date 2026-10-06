@@ -1,4 +1,18 @@
-# Etiquetas Winder — Zebra Browser Print
+# Etiquetas Winder — impresión Zebra
+
+## Modo recomendado: impresión desde el servidor (octubre 2026)
+
+No requiere instalar nada en los equipos de planta. La API de Administración arma la etiqueta (ZPL con QR OTEK1, `app/services/zpl.py`) y la envía directo a la Zebra de la estación por red (TCP 9100).
+
+1. En la impresora: conectarla a la red con **IP fija** (o reserva DHCP) y anotar la IP.
+2. Administración → **Impresoras**: agregar cada impresora (nombre, estación, IP, puerto 9100, 203 dpi, 104 × 54 mm). Con **Probar conexión** se consulta su estado (papel, pausa, cabezal). Con **Imprimir prueba** sale una etiqueta de prueba.
+3. Producción → **Configuración Zebra** (administrador, una vez por equipo): modo "Desde el servidor" y la impresora de la estación. Guardar.
+4. Al imprimir, el servidor revisa el estado (bloquea con papel agotado, pausa o cabezal abierto), envía la etiqueta y la registra en `produccion.trabajo_impresion`. Queda pendiente hasta que el operador confirma que salió. Los pendientes se ven desde cualquier equipo.
+
+Requisitos de red: el servidor (contenedor `api`) debe alcanzar la IP de cada impresora en el puerto 9100. El servidor solo imprime en impresoras del catálogo. Estructura: `python -m app.cli.upgrade_printing` (en despliegue: `--migrar=upgrade_printing`).
+
+## Modo de respaldo: Browser Print en el equipo
+
 
 Referencia: ETIQUETA_ZEBRA.xlsx, hoja Etiqueta (A1:AB12). Serial K3, Code 39 B5, condición S2, DN E9, PN N9, SN W9; pie con fecha, operador, longitud y turno. El archivo no define dimensiones físicas ni resolución. El usuario confirmó posteriormente 104 × 54 mm y 203 dpi; no se ha probado salida física.
 

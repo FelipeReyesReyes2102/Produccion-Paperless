@@ -11,8 +11,9 @@ export function ZebraSettingsPage() {
         <p className="eyebrow">ADMINISTRACIÓN DEL EQUIPO</p>
         <h2>Configuración Zebra</h2>
         <p>
-          Configuración exclusiva para administradores. Se utiliza para todos los usuarios que
-          imprimen desde este navegador y equipo.
+          Asigna la impresora de esta estación. Con el modo servidor no hace falta instalar nada en
+          el equipo: la etiqueta la envía el servidor. Se aplica a todos los usuarios de este
+          navegador.
         </p>
       </section>
       {zebra.configuration}
