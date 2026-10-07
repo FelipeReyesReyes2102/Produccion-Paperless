@@ -1,0 +1,44 @@
+.reka-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+.reka-tabs button {
+  width: auto !important;
+  flex: 0 0 auto;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--brand, #246294);
+  background: #fff;
+  color: var(--brand, #246294);
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+.reka-tabs button.active {
+  background: var(--brand, #246294);
+  color: #fff;
+}
+.reka-count {
+  min-width: 22px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #cc4545;
+  color: #fff;
+  font-size: 12px;
+  text-align: center;
+}
+.reka-selected td {
+  background: #e7f0f8;
+}
+.reka-inline {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line, #dbe4ec);
+}
+.reka .table-wrap select {
+  max-width: 220px;
+}

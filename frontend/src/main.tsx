@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route, NavLink, Outlet, Link, Navigate } from 'react-router-dom';
-import { Home, Factory, Gauge, LogOut, Printer, Ruler, Wrench } from 'lucide-react';
+import { Cog, Home, Factory, Gauge, LogOut, Printer, Ruler, Wrench } from 'lucide-react';
 import { AuthProvider, useAuth } from './auth/AuthContext';
 import { ProtectedRoute } from './auth/ProtectedRoute';
 import { LoginPage } from './pages/LoginPage';
@@ -12,6 +12,7 @@ import { PipeRegistrationPage } from './pages/PipeRegistrationPage';
 import { DimensionalPage } from './pages/DimensionalPage';
 import { CalibradoPage } from './pages/CalibradoPage';
 import { HydroPage } from './pages/HydroPage';
+import { RekaPage } from './pages/RekaPage';
 import './styles.css';
 import './production-layout.css';
 import './brand-theme.css';
@@ -54,6 +55,12 @@ function Production() {
             <NavLink to="/prueba-hidraulica">
               <Gauge size={19} />
               <span>Prueba hidráulica</span>
+            </NavLink>
+          )}
+          {allowed && can('PRODUCCION.REKA.REGISTRAR') && (
+            <NavLink to="/reka">
+              <Cog size={19} />
+              <span>Reka</span>
             </NavLink>
           )}
           {user?.roles.includes('ADMINISTRADOR') && (
@@ -144,6 +151,16 @@ function HomePage() {
             <span>Abrir prueba →</span>
           </Link>
         )}
+        {can('PRODUCCION.REKA.REGISTRAR') && (
+          <Link className="production-module" to="/reka">
+            <Cog size={30} />
+            <h3>Reka</h3>
+            <p>
+              Maquina coples de los cañones de tubería base y sigue su PH, liberación y recepción.
+            </p>
+            <span>Abrir Reka →</span>
+          </Link>
+        )}
       </section>
     </>
   );
@@ -164,6 +181,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 <Route path="dimensional" element={<DimensionalPage />} />
                 <Route path="calibrado" element={<CalibradoPage />} />
                 <Route path="prueba-hidraulica" element={<HydroPage />} />
+                <Route path="reka" element={<RekaPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Route>
             </Route>
