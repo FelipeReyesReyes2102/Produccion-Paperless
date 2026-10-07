@@ -1116,26 +1116,48 @@ function Release() {
   );
 }
 
+type SapUbicacion = {
+  id: number;
+  codigo: string;
+  descripcion: string | null;
+  compania: string;
+  compania_nombre: string;
+  almacen: string;
+  zona: string;
+  nivel2: string | null;
+};
+
 function Reception() {
   const refresh = useRefresh();
-  const data = useQuery<{
-    coples: Cople[];
-    ubicaciones: { id: number; codigo: string; descripcion: string | null }[];
-  }>({
+  const data = useQuery<{ coples: Cople[]; ubicaciones: SapUbicacion[] }>({
     queryKey: ['reka-lista', 'recepcion'],
     queryFn: async () => (await api.get(`${API}/recepcion`)).data,
   });
-  const [place, setPlace] = useState<Record<string, string>>({});
+  const ubicaciones = data.data?.ubicaciones ?? [];
+  const [almacen, setAlmacen] = useState('');
+  const [zona, setZona] = useState('');
+  const [ubicacion, setUbicacion] = useState('');
   const [ok, setOk] = useState<string[]>([]);
   const [err, setErr] = useState('');
+  const uniq = (xs: string[]) => [...new Set(xs)];
+  const almacenes = uniq(ubicaciones.map((u) => `${u.compania}|${u.almacen}`));
+  const zonas = uniq(
+    ubicaciones.filter((u) => `${u.compania}|${u.almacen}` === almacen).map((u) => u.zona),
+  );
+  const bins = ubicaciones.filter(
+    (u) => `${u.compania}|${u.almacen}` === almacen && u.zona === zona,
+  );
+  const elegida = ubicaciones.find((u) => String(u.id) === ubicacion);
+  const companias = uniq(ubicaciones.map((u) => u.compania)).length;
 
   async function receive(c: Cople) {
+    if (!elegida) return;
     setErr('');
     try {
-      const { data: r } = await api.post(`${API}/coples/${c.id}/recibir`, {
-        ubicacion_id: Number(place[c.id]),
-      });
-      setOk([`Cople ${c.serial} recibido en ${r.ubicacion}.`]);
+      await api.post(`${API}/coples/${c.id}/recibir`, { ubicacion_id: elegida.id });
+      setOk([
+        `Cople ${c.serial} recibido en SAP ${elegida.almacen} · zona ${elegida.zona} · ${elegida.codigo}.`,
+      ]);
       refresh();
     } catch (error) {
       setErr(errorText(error));
@@ -1145,35 +1167,90 @@ function Reception() {
   return (
     <section className="form-card">
       <h3>Recepción en patio</h3>
-      <p>El cople entra al inventario de Administración en la ubicación elegida.</p>
+      <p>
+        Elige la ubicación de patio de SAP (almacén, zona y ubicación) y recibe los coples. Entran
+        al inventario de Administración en esa ubicación.
+      </p>
       <Messages ok={ok} err={err} />
-      {data.data?.ubicaciones.length === 0 && (
+      {data.isSuccess && ubicaciones.length === 0 && (
         <p className="process-warning">
-          No hay ubicaciones de patio activas. Dalas de alta en Administración → Inventario.
+          No hay ubicaciones de patio de SAP disponibles. Sincronízalas en Administración → Conexión
+          SAP.
+        </p>
+      )}
+      <div className="form-grid reka-sap-destino">
+        <label>
+          Almacén SAP
+          <select
+            value={almacen}
+            onChange={(e) => {
+              setAlmacen(e.target.value);
+              setZona('');
+              setUbicacion('');
+            }}
+          >
+            <option value="">Selecciona el almacén</option>
+            {almacenes.map((a) => {
+              const [comp, whs] = a.split('|');
+              const nombre = ubicaciones.find((u) => u.compania === comp)?.compania_nombre;
+              return (
+                <option key={a} value={a}>
+                  {whs}
+                  {companias > 1 ? ` · ${nombre}` : ''}
+                </option>
+              );
+            })}
+          </select>
+        </label>
+        <label>
+          Zona
+          <select
+            value={zona}
+            disabled={!almacen}
+            onChange={(e) => {
+              setZona(e.target.value);
+              setUbicacion('');
+            }}
+          >
+            <option value="">Selecciona la zona</option>
+            {zonas.map((z) => (
+              <option key={z} value={z}>
+                {z}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Ubicación
+          <select value={ubicacion} disabled={!zona} onChange={(e) => setUbicacion(e.target.value)}>
+            <option value="">Selecciona la ubicación</option>
+            {bins.map((u) => (
+              <option key={u.id} value={u.id}>
+                {u.codigo}
+                {u.nivel2 ? ` · ${u.nivel2}` : ''}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+      {elegida && (
+        <p className="success">
+          Destino: {elegida.compania_nombre} · almacén {elegida.almacen} · zona {elegida.zona} ·{' '}
+          {elegida.codigo}
         </p>
       )}
       <CopleTable
         rows={data.data?.coples}
         empty="No hay coples pendientes de recepción."
         action={(c) => (
-          <>
-            <select
-              aria-label={`Ubicación de ${c.serial}`}
-              value={place[c.id] ?? ''}
-              onChange={(e) => setPlace({ ...place, [c.id]: e.target.value })}
-            >
-              <option value="">Ubicación</option>
-              {data.data?.ubicaciones.map((u) => (
-                <option key={u.id} value={u.id}>
-                  {u.codigo}
-                  {u.descripcion ? ` · ${u.descripcion}` : ''}
-                </option>
-              ))}
-            </select>{' '}
-            <button type="button" disabled={!place[c.id]} onClick={() => void receive(c)}>
-              Recibir
-            </button>
-          </>
+          <button
+            type="button"
+            disabled={!elegida}
+            title={elegida ? '' : 'Elige primero almacén, zona y ubicación de SAP'}
+            onClick={() => void receive(c)}
+          >
+            Recibir aquí
+          </button>
         )}
       />
     </section>

@@ -18,9 +18,11 @@
   gap: 8px;
   align-items: center;
 }
-.reka-tabs button.active {
-  background: var(--brand, #246294);
-  color: #fff;
+.reka-tabs button.active,
+.reka-tabs button.active:hover,
+.reka-tabs button.active:focus {
+  background: var(--brand, #246294) !important;
+  color: #fff !important;
 }
 .reka-count {
   min-width: 22px;
