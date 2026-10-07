@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route, NavLink, Outlet, Link, Navigate } from 'react-router-dom';
-import { Cog, Home, Factory, Gauge, LogOut, Printer, Ruler, Wrench } from 'lucide-react';
+import { Cog, Home, Factory, Gauge, Link2, LogOut, Printer, Ruler, Wrench } from 'lucide-react';
 import { AuthProvider, useAuth } from './auth/AuthContext';
 import { ProtectedRoute } from './auth/ProtectedRoute';
 import { LoginPage } from './pages/LoginPage';
@@ -13,11 +13,18 @@ import { DimensionalPage } from './pages/DimensionalPage';
 import { CalibradoPage } from './pages/CalibradoPage';
 import { HydroPage } from './pages/HydroPage';
 import { RekaPage } from './pages/RekaPage';
+import { CouplingPage } from './pages/CouplingPage';
 import './styles.css';
 import './production-layout.css';
 import './brand-theme.css';
+const COUPLING = [
+  'PRODUCCION.COUPLING.REGISTRAR',
+  'PRODUCCION.COUPLING.CALIDAD',
+  'PRODUCCION.COUPLING.RECEPCION',
+];
 function Production() {
   const { user, logout, can } = useAuth();
+  const canCoupling = COUPLING.some(can);
   const allowed = user?.roles.some((role) =>
     ['OPERARIO', 'ADMINISTRADOR', 'SUPERVISOR', 'SUPERVISOR_MANUFACTURA'].includes(role),
   );
@@ -61,6 +68,12 @@ function Production() {
             <NavLink to="/reka">
               <Cog size={19} />
               <span>Reka</span>
+            </NavLink>
+          )}
+          {allowed && canCoupling && (
+            <NavLink to="/coupling">
+              <Link2 size={19} />
+              <span>Coupling</span>
             </NavLink>
           )}
           {user?.roles.includes('ADMINISTRADOR') && (
@@ -161,6 +174,16 @@ function HomePage() {
             <span>Abrir Reka →</span>
           </Link>
         )}
+        {COUPLING.some(can) && (
+          <Link className="production-module" to="/coupling">
+            <Link2 size={30} />
+            <h3>Coupling</h3>
+            <p>
+              Libera tubería enchufada, no enchufada o coples solos hasta su recepción en patio.
+            </p>
+            <span>Abrir Coupling →</span>
+          </Link>
+        )}
       </section>
     </>
   );
@@ -182,6 +205,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 <Route path="calibrado" element={<CalibradoPage />} />
                 <Route path="prueba-hidraulica" element={<HydroPage />} />
                 <Route path="reka" element={<RekaPage />} />
+                <Route path="coupling" element={<CouplingPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Route>
             </Route>

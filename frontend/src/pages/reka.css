@@ -44,3 +44,35 @@
 .reka .table-wrap select {
   max-width: 220px;
 }
+.coupling-control {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+.coupling-control p {
+  margin: 0;
+}
+.coupling-control button {
+  width: auto !important;
+}
+.coupling-modos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+.coupling-modos label {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  font-weight: 600;
+}
+.coupling-modos input {
+  width: auto;
+}
+.coupling-pieza {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line, #dbe4ec);
+}
