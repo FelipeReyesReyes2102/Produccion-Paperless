@@ -76,3 +76,26 @@
   padding-top: 8px;
   border-top: 1px solid var(--line, #dbe4ec);
 }
+.odd-scan {
+  display: flex;
+  gap: 10px;
+  align-items: end;
+  margin-bottom: 12px;
+}
+.odd-scan label {
+  flex: 1;
+}
+.odd-scan button {
+  width: auto !important;
+}
+.odd-progreso {
+  height: 10px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+  margin: 10px 0 4px;
+}
+.odd-progreso div {
+  height: 100%;
+  background: var(--brand, #246294);
+}

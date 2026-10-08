@@ -4,7 +4,18 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route, NavLink, Outlet, Link, Navigate } from 'react-router-dom';
-import { Cog, Home, Factory, Gauge, Link2, LogOut, Printer, Ruler, Wrench } from 'lucide-react';
+import {
+  Cog,
+  Home,
+  Factory,
+  Gauge,
+  Link2,
+  LogOut,
+  Printer,
+  Ruler,
+  Scissors,
+  Wrench,
+} from 'lucide-react';
 import { AuthProvider, useAuth } from './auth/AuthContext';
 import { ProtectedRoute } from './auth/ProtectedRoute';
 import { LoginPage } from './pages/LoginPage';
@@ -14,9 +25,11 @@ import { CalibradoPage } from './pages/CalibradoPage';
 import { HydroPage } from './pages/HydroPage';
 import { RekaPage } from './pages/RekaPage';
 import { CouplingPage } from './pages/CouplingPage';
+import { OddPage } from './pages/OddPage';
 import './styles.css';
 import './production-layout.css';
 import './brand-theme.css';
+const ODD = ['PRODUCCION.ODD.REGISTRAR', 'PRODUCCION.ODD.CALIDAD', 'PRODUCCION.ODD.RECEPCION'];
 const COUPLING = [
   'PRODUCCION.COUPLING.REGISTRAR',
   'PRODUCCION.COUPLING.CALIDAD',
@@ -25,6 +38,7 @@ const COUPLING = [
 function Production() {
   const { user, logout, can } = useAuth();
   const canCoupling = COUPLING.some(can);
+  const canOdd = ODD.some(can);
   const allowed = user?.roles.some((role) =>
     ['OPERARIO', 'ADMINISTRADOR', 'SUPERVISOR', 'SUPERVISOR_MANUFACTURA'].includes(role),
   );
@@ -74,6 +88,12 @@ function Production() {
             <NavLink to="/coupling">
               <Link2 size={19} />
               <span>Coupling</span>
+            </NavLink>
+          )}
+          {allowed && canOdd && (
+            <NavLink to="/odd">
+              <Scissors size={19} />
+              <span>Registro ODD</span>
             </NavLink>
           )}
           {user?.roles.includes('ADMINISTRADOR') && (
@@ -184,6 +204,14 @@ function HomePage() {
             <span>Abrir Coupling →</span>
           </Link>
         )}
+        {ODD.some(can) && (
+          <Link className="production-module" to="/odd">
+            <Scissors size={30} />
+            <h3>Registro ODD</h3>
+            <p>Registra los cortes de las órdenes aprobadas y da seguimiento a cada tramo.</p>
+            <span>Abrir Registro ODD →</span>
+          </Link>
+        )}
       </section>
     </>
   );
@@ -206,6 +234,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 <Route path="prueba-hidraulica" element={<HydroPage />} />
                 <Route path="reka" element={<RekaPage />} />
                 <Route path="coupling" element={<CouplingPage />} />
+                <Route path="odd" element={<OddPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Route>
             </Route>
